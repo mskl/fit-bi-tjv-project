@@ -1,0 +1,15 @@
+eu/cz/fit/bitjv/semestralserver/enitity/Prujezd.class
+eu/cz/fit/bitjv/semestralserver/enitity/Zavora.class
+eu/cz/fit/bitjv/semestralserver/service/ApplicationConfig.class
+eu/cz/fit/bitjv/semestralserver/enitity/Majitel_.class
+eu/cz/fit/bitjv/semestralserver/service/ZavoraFacadeREST.class
+eu/cz/fit/bitjv/semestralserver/service/AutoFacadeREST.class
+eu/cz/fit/bitjv/semestralserver/service/AbstractFacade.class
+eu/cz/fit/bitjv/semestralserver/service/PrujezdFacadeREST.class
+eu/cz/fit/bitjv/semestralserver/service/MajitelFacadeREST.class
+eu/cz/fit/bitjv/semestralserver/enitity/Zavora_.class
+eu/cz/fit/bitjv/semestralserver/enitity/Auto.class
+eu/cz/fit/bitjv/semestralserver/enitity/Prujezd_.class
+eu/cz/fit/bitjv/semestralserver/enitity/Majitel.class
+eu/cz/fit/bitjv/semestralserver/misc/FillDummy.class
+eu/cz/fit/bitjv/semestralserver/enitity/Auto_.class
