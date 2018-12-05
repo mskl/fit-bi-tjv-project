@@ -1,2 +1,4 @@
-# fit-bi-tjv
-Semestrálka BI-TJV
+# Semestrálka BI-TJV
+- SemestralServer - server
+- SemestralKlient - klient
+
