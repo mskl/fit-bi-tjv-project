@@ -13,11 +13,9 @@ import com.vaadin.ui.Label;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
-import eu.cz.fit.bitjv.semestralklient.dto.Majitel;
-import eu.cz.fit.bitjv.semestralklient.rest.MajitelFacadeRESTClient;
-import eu.cz.fit.bitjv.semestralklient.rest.AutoFacadeRESTClient;
-import eu.cz.fit.bitjv.semestralklient.rest.ZavoraFacadeRESTClient;
-import eu.cz.fit.bitjv.semestralklient.rest.PrujezdFacadeRESTClient;
+import eu.cz.fit.bitjv.semestralklient.rest.AutoRESTClient;
+import eu.cz.fit.bitjv.semestralklient.rest.ZavoraRESTClient;
+import eu.cz.fit.bitjv.semestralklient.rest.PrujezdRESTClient;
 import java.util.ArrayList;
 import java.util.List;
 import jdk.nashorn.internal.parser.JSONParser;
@@ -36,14 +34,12 @@ public class MyUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
  
-        MajitelFacadeRESTClient majitel_client = new MajitelFacadeRESTClient();
-        AutoFacadeRESTClient auto_client = new AutoFacadeRESTClient();
-        ZavoraFacadeRESTClient zavora = new ZavoraFacadeRESTClient();
-        PrujezdFacadeRESTClient prujezd_client = new PrujezdFacadeRESTClient();
+        AutoRESTClient auto_client = new AutoRESTClient();
+        ZavoraRESTClient zavora = new ZavoraRESTClient();
+        PrujezdRESTClient prujezd_client = new PrujezdRESTClient();
         
         // ListDataProvider<Majitel> majiteleDP = majitel_client.getDataProvider();
         // List<Majitel> list_majitelu = new ArrayList<Majitel>();
-        TypeToken<List<Majitel>> token = new TypeToken<List<Majitel>>(){};
         
         final Label line1 = new Label("______________________________________");
         layout.addComponent(line1);
@@ -54,7 +50,7 @@ public class MyUI extends UI {
  
         Button button1 = new Button("Vypis uzivatele");
         button1.addClickListener(e -> {
-            uzivatel_label.setValue("Output: " + list_majitelu.toString());
+            //uzivatel_label.setValue("Output: " + list_majitelu.toString());
         });
  
         layout.addComponent( button1 );

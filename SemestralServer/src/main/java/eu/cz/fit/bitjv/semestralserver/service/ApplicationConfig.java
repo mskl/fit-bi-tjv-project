@@ -32,7 +32,6 @@ public class ApplicationConfig extends Application {
     private void addRestResourceClasses(Set<Class<?>> resources) {
         resources.add(eu.cz.fit.bitjv.semestralserver.misc.FillDummy.class);
         resources.add(eu.cz.fit.bitjv.semestralserver.service.AutoFacadeREST.class);
-        resources.add(eu.cz.fit.bitjv.semestralserver.service.MajitelFacadeREST.class);
         resources.add(eu.cz.fit.bitjv.semestralserver.service.PrujezdFacadeREST.class);
         resources.add(eu.cz.fit.bitjv.semestralserver.service.ZavoraFacadeREST.class);
     }
