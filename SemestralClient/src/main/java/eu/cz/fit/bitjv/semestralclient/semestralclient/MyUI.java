@@ -49,16 +49,20 @@ public class MyUI extends UI {
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
         
-        // Create the clients
+        /*
+            Create the REST clients
+        */
         AutoRESTClient ac = new AutoRESTClient();
         ZavoraRESTClient zc = new ZavoraRESTClient();
         PrujezdRESTClient pc = new PrujezdRESTClient();
         
-        // Top-level sub-layouts
+        /*
+            The top navigation bar
+        */
         // Auto layout
         VerticalLayout autoLayout = new VerticalLayout();
         autoLayout.setSizeFull();
-        autoLayout.setVisible(false);
+        autoLayout.setVisible(true);
         layout.addComponent(autoLayout);
         // Zavora layout
         VerticalLayout zavoraLayout = new VerticalLayout();
@@ -76,6 +80,7 @@ public class MyUI extends UI {
         layout.addComponentAsFirst(barmenu);
         MenuItem autoMenu = barmenu.addItem("Auta");
         autoMenu.setCheckable(true);
+        autoMenu.setChecked(true); // auto is selected at the beginning
         MenuItem zavoraMenu = barmenu.addItem("Závory");
         zavoraMenu.setCheckable(true);
         MenuItem prujezdMenu = barmenu.addItem("Průjezdy");
@@ -108,14 +113,26 @@ public class MyUI extends UI {
         });
         
         /*
-        ========================================================================\
-            Auta grid layout
+            The global grid definitions
         */
-        // The grid showing all cars
         AutoBox auta = ac.findAllAuta_JSON(AutoBox.class);
         Grid<Auto> autoGrid = initAutoGrid(auta.getAutobox(), ac);
         autoLayout.addComponent(autoGrid);
         autoLayout.setExpandRatio(autoGrid, 0.8f);
+        ZavoraBox zavory = zc.findAllZavory_JSON(ZavoraBox.class);
+        Grid<Zavora> zavoraGrid = initZavoraGrid(zavory.getZavorabox(), zc);
+        zavoraLayout.addComponent(zavoraGrid);
+        zavoraLayout.setExpandRatio(zavoraGrid, 0.8f);
+        PrujezdBox prujezdy = pc.findAllPrujezdy_JSON(PrujezdBox.class);
+        Grid<Prujezd> prujezdGrid = initPrujezdGrid(prujezdy.getPrujezdbox(), pc);
+        prujezdLayout.addComponent(prujezdGrid);
+        prujezdLayout.setExpandRatio(prujezdGrid, 0.8f);
+        
+        /*
+        ========================================================================\
+            Auta grid layout
+        */
+        // The grid showing all cars
         
         // The form to edit the cars
         FormLayout autoForm = new FormLayout();
@@ -139,11 +156,11 @@ public class MyUI extends UI {
                     eAuto.setNazev(autoNazevField.getValue());
                     eAuto.setSPZ(autoSPZField.getValue());
                     ac.edit_XML(eAuto, autoIdField.getValue());
-                    fillAutoGrid(autoGrid, ac);
                 }
             }
-            
+
             fillAutoGrid(autoGrid, ac);
+            fillPrujezdGrid(prujezdGrid, pc);
         });
         VerticalLayout autoEditBar = new VerticalLayout(autoIdField, autoNazevField, autoSPZField, aEdit);
         autoForm.addComponents(autoEditBar);
@@ -169,10 +186,6 @@ public class MyUI extends UI {
         ========================================================================
             Zavory layout
         */
-        ZavoraBox zavory = zc.findAllZavory_JSON(ZavoraBox.class);
-        Grid<Zavora> zavoraGrid = initZavoraGrid(zavory.getZavorabox(), zc);
-        zavoraLayout.addComponent(zavoraGrid);
-        zavoraLayout.setExpandRatio(zavoraGrid, 0.8f);
         
         // The form to edit zavory
         FormLayout zavoraForm = new FormLayout();
@@ -198,11 +211,11 @@ public class MyUI extends UI {
                     eZavora.setUmisteni(zavoraUmisteniField.getValue());
                     eZavora.setCenaZaPrujezd(Float.parseFloat(zavoraCenaField.getValue()));
                     zc.edit_XML(eZavora, zavoraIdField.getValue());
-                    fillZavoraGrid(zavoraGrid, zc);
                 }
             }
             
             fillZavoraGrid(zavoraGrid, zc);
+            fillPrujezdGrid(prujezdGrid, pc);
         });
         VerticalLayout zavoraEditBar = new VerticalLayout(zavoraIdField, zavoraUmisteniField, zavoraCenaField, zEdit);
         zavoraForm.addComponents(zavoraEditBar);
@@ -228,10 +241,6 @@ public class MyUI extends UI {
         ========================================================================
             Prujezdy layout
         */
-        PrujezdBox prujezdy = pc.findAllPrujezdy_JSON(PrujezdBox.class);
-        Grid<Prujezd> prujezdGrid = initPrujezdGrid(prujezdy.getPrujezdbox(), pc);
-        prujezdLayout.addComponent(prujezdGrid);
-        prujezdLayout.setExpandRatio(prujezdGrid, 0.8f);
 
         // The form to edit zavory
         FormLayout prujezdForm = new FormLayout();
@@ -349,6 +358,7 @@ public class MyUI extends UI {
                 ac.remove(auto.getId().toString());  
                 AutoBox tmp = ac.findAllAuta_JSON(AutoBox.class);
                 grid.setItems(tmp.getAutobox());
+                
             });
             
             return del;
