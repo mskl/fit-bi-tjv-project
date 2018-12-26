@@ -7,6 +7,7 @@ package eu.cz.fit.bitjv.semestralclient.dto;
 
 import java.io.Serializable;
 import java.util.List;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -26,18 +27,30 @@ public class Zavora implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "ZAVORA_ID")
     private Long id;
     
     private String umisteni;
     
-    @OneToMany(targetEntity = Prujezd.class, mappedBy="zavora")
-    private List<Prujezd> prujezdy;
+    private float cenaZaPrujezd;
 
-    public Zavora(String umisteni) {
-        this.umisteni = umisteni;
+    public float getCenaZaPrujezd() {
+        return cenaZaPrujezd;
+    }
+
+    public void setCenaZaPrujezd(float cenaZaPrujezd) {
+        this.cenaZaPrujezd = cenaZaPrujezd;
     }
     
+    @OneToMany(targetEntity=Prujezd.class, mappedBy="zavora", fetch=FetchType.EAGER)
+    private List<Prujezd> prujezdy;
+
+    public Zavora(String umisteni, float cenaZaPrujezd) {
+        this.umisteni = umisteni;
+        this.cenaZaPrujezd = cenaZaPrujezd;
+    }
+
     public Zavora() {
         
     }

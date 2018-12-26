@@ -6,6 +6,7 @@
 package eu.cz.fit.bitjv.semestralserver.service;
 
 import eu.cz.fit.bitjv.semestralserver.semestralentity.Zavora;
+import eu.cz.fit.bitjv.semestralserver.semestralentity.ZavoraBox;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -62,11 +63,21 @@ public class ZavoraFacadeREST extends AbstractFacade<Zavora> {
         return super.find(id);
     }
 
+    /*
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Zavora> findAll() {
         return super.findAll();
+    }
+    */
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public ZavoraBox findAllZavory() {
+        ZavoraBox zavory = new ZavoraBox();
+        zavory.setZavorabox(super.findAll());
+        return zavory;
     }
 
     @GET

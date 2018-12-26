@@ -39,16 +39,16 @@ public class FillDummy {
     @GET
     @Produces(MediaType.TEXT_HTML)
     public String FillDummy() {        
-        Auto a0 = new Auto("Nissan X-Trail");
+        Auto a0 = new Auto("Nissan X-Trail", "3E0-6230");
         a.create(a0);
         
-        Zavora z0 = new Zavora("Přední brána");
+        Zavora z0 = new Zavora("Přední brána", 120);
         z.create(z0);
         
         Prujezd p0 = new Prujezd(new Date(), a0, z0);
         p.create(p0);
-        
         /*
+        
         Auto a1 = new Auto("Mazda MX-5");
         a.create(a1);
         Auto a2 = new Auto("Ford F-150");
@@ -65,7 +65,6 @@ public class FillDummy {
         p.create(p2);
         Prujezd p3 = new Prujezd(new Date(), a2, z0);
         p.create(p3);
-
         */
 
         return "<html><head><meta http-equiv=\"refresh\" content=\"0; url=http://localhost:8080/SemestralServer/\" /></head><body></body></html>";

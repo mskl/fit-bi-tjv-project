@@ -7,8 +7,6 @@ package eu.cz.fit.bitjv.semestralserver.semestralentity;
 
 import java.io.Serializable;
 import java.util.Date;
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,7 +14,6 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.xml.bind.annotation.XmlRootElement;
 
@@ -30,18 +27,18 @@ public class Prujezd implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
     
     @Temporal(javax.persistence.TemporalType.TIMESTAMP)
     private Date datum_prujezdu;
     
-    @ManyToOne(targetEntity=Auto.class, fetch=FetchType.LAZY, 
-            cascade=CascadeType.ALL)
+    @ManyToOne(targetEntity=Auto.class, fetch=FetchType.EAGER, optional=false)
+    @JoinColumn(name="AUTO_ID")
     private Auto auto;
     
-    @ManyToOne(targetEntity=Zavora.class, fetch=FetchType.LAZY, 
-            cascade=CascadeType.ALL)
+    @ManyToOne(targetEntity=Zavora.class, fetch=FetchType.EAGER, optional=false)
+    @JoinColumn(name="ZAVORA_ID")
     private Zavora zavora;
 
     public Prujezd(Date datum_prujezdu, Auto auto, Zavora zavora) {

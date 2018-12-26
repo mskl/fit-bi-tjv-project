@@ -5,16 +5,15 @@
  */
 package eu.cz.fit.bitjv.semestralserver.semestralentity;
 
+import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author matya
  */
-@XmlRootElement
 public class PrujezdBox {
-    private List<Prujezd> prujezdbox;
+    private List<Prujezd> prujezdbox = new ArrayList<Prujezd>();
 
     public List<Prujezd> getPrujezdbox() {
         return prujezdbox;

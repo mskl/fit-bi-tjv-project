@@ -4,16 +4,15 @@
  * and open the template in the editor.
  */
 package eu.cz.fit.bitjv.semestralclient.dto;
+import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author matya
  */
-@XmlRootElement
 public class AutoBox {
-    private List<Auto> autobox;
+    private List<Auto> autobox = new ArrayList<Auto>();
 
     public List<Auto> getAutobox() {
         return autobox;

@@ -5,21 +5,19 @@
  */
 package eu.cz.fit.bitjv.semestralclient.dto;
 
+
 import java.io.Serializable;
 import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
-import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+
 
 /**
  *
@@ -31,16 +29,28 @@ public class Auto implements Serializable {
 
     private static final long serialVersionUID = 1L;
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "AUTO_ID")
     private Long id;
     
     private String nazev;
     
-    @OneToMany(targetEntity=Prujezd.class, mappedBy="auto")
+    private String SPZ;
+
+    public String getSPZ() {
+        return SPZ;
+    }
+
+    public void setSPZ(String SPZ) {
+        this.SPZ = SPZ;
+    }
+    
+    @OneToMany(targetEntity=Prujezd.class, mappedBy="auto", fetch=FetchType.EAGER)
     private List<Prujezd> prujezdy;
 
-    public Auto(String nazev) {
+    public Auto(String nazev, String SPZ) {
         this.nazev = nazev;
+        this.SPZ = SPZ;
     }
     
     public Auto() {

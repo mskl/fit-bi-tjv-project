@@ -5,16 +5,15 @@
  */
 package eu.cz.fit.bitjv.semestralserver.semestralentity;
 
+import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  *
  * @author matya
  */
-@XmlRootElement
 public class ZavoraBox {
-    private List<Zavora> zavorabox;
+    private List<Zavora> zavorabox = new ArrayList<Zavora>();
 
     public List<Zavora> getZavorabox() {
         return zavorabox;

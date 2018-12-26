@@ -6,6 +6,7 @@
 package eu.cz.fit.bitjv.semestralserver.service;
 
 import eu.cz.fit.bitjv.semestralserver.semestralentity.Auto;
+import eu.cz.fit.bitjv.semestralserver.semestralentity.AutoBox;
 import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
@@ -61,13 +62,24 @@ public class AutoFacadeREST extends AbstractFacade<Auto> {
     public Auto find(@PathParam("id") Long id) {
         return super.find(id);
     }
-
+    
+    /*
     @GET
     @Override
     @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
     public List<Auto> findAll() {
         return super.findAll();
     }
+    */
+    
+    @GET
+    @Produces({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})
+    public AutoBox findAllAuta() {
+        AutoBox auta = new AutoBox();
+        auta.setAutobox(super.findAll());
+        return auta;
+    }
+
 
     @GET
     @Path("{from}/{to}")
