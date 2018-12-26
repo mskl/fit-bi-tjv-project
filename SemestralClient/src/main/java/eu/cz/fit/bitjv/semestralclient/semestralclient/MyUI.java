@@ -8,14 +8,14 @@ import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.icons.VaadinIcons;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
-import com.vaadin.ui.Alignment;
 import com.vaadin.ui.Button;
+import com.vaadin.ui.ComboBox;
+import com.vaadin.ui.DateTimeField;
 import com.vaadin.ui.FormLayout;
 import com.vaadin.ui.Grid;
-import com.vaadin.ui.HorizontalLayout;
-import com.vaadin.ui.Label;
 import com.vaadin.ui.MenuBar;
 import com.vaadin.ui.MenuBar.MenuItem;
+import com.vaadin.ui.Notification;
 import com.vaadin.ui.TextField;
 import com.vaadin.ui.UI;
 import com.vaadin.ui.VerticalLayout;
@@ -29,8 +29,11 @@ import eu.cz.fit.bitjv.semestralclient.dto.ZavoraBox;
 import eu.cz.fit.bitjv.semestralclient.rest.AutoRESTClient;
 import eu.cz.fit.bitjv.semestralclient.rest.PrujezdRESTClient;
 import eu.cz.fit.bitjv.semestralclient.rest.ZavoraRESTClient;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Date;
 import java.util.List;
-import java.util.Set;
+import java.util.NoSuchElementException;
 
 /**
  * This UI is the application entry point. A UI may either represent a browser window 
@@ -226,10 +229,101 @@ public class MyUI extends UI {
             Prujezdy layout
         */
         PrujezdBox prujezdy = pc.findAllPrujezdy_JSON(PrujezdBox.class);
-        Grid<Prujezd> prujezdGrid = initPrujezdGrid(prujezdy.getPrujezdbox());
+        Grid<Prujezd> prujezdGrid = initPrujezdGrid(prujezdy.getPrujezdbox(), pc);
         prujezdLayout.addComponent(prujezdGrid);
         prujezdLayout.setExpandRatio(prujezdGrid, 0.8f);
 
+        // The form to edit zavory
+        FormLayout prujezdForm = new FormLayout();
+        TextField prujezdIdField = new TextField("ID");
+        prujezdIdField.setEnabled(false);
+        zavoraIdField.setEnabled(false);
+        // Auto combo box
+        ComboBox<Auto> prujezdAutoComboBox = new ComboBox<Auto>("Auto");
+        prujezdAutoComboBox.setItemCaptionGenerator(p -> p.getNazev());
+        AutoBox listAut = ac.findAllAuta_JSON(AutoBox.class);
+        prujezdAutoComboBox.setItems(listAut.getAutobox());
+        // Umisteni combo box
+        ComboBox<Zavora> prujezdZavoraComboBox = new ComboBox<Zavora>("Umístění");
+        prujezdZavoraComboBox.setItemCaptionGenerator(p -> p.getUmisteni());
+        ZavoraBox listZavor = zc.findAllZavory_JSON(ZavoraBox.class);
+        prujezdZavoraComboBox.setItems(listZavor.getZavorabox());
+        // The date picker
+        DateTimeField prujezdDatumField = new DateTimeField("Datum průjezdu");
+        // Edit button
+        Button pEdit = new Button("Vytvořit");
+        pEdit.addClickListener(e -> {
+            if ("".equals(prujezdIdField.getValue())) {
+                // Create a new prujezd
+                // might throw errors if the window is empty
+                try {
+                    Auto a = prujezdAutoComboBox.getSelectedItem().get();
+                    Zavora z = prujezdZavoraComboBox.getSelectedItem().get();
+                    Date d = Date.from(prujezdDatumField.getValue().
+                            atZone(ZoneId.systemDefault()).toInstant());
+                    Prujezd p = new Prujezd(d, a, z);
+                    pc.create_JSON(p);
+                    // clear the fields
+                    prujezdIdField.clear();
+                    prujezdAutoComboBox.clear();
+                    prujezdZavoraComboBox.clear();
+                    prujezdDatumField.clear();
+                } 
+                catch (Exception ex) {
+                    Notification.show("Failed to create prujezd", 
+                            Notification.Type.HUMANIZED_MESSAGE);
+                }
+            } else {
+                // Edit an existing prujezd
+                Prujezd ePrujezd = pc.find_XML(Prujezd.class, prujezdIdField.getValue());
+                if (ePrujezd != null) {
+                    try {
+                        Auto a = prujezdAutoComboBox.getSelectedItem().get();
+                        Zavora z = prujezdZavoraComboBox.getSelectedItem().get();
+                        Date d = Date.from(prujezdDatumField.getValue().
+                            atZone(ZoneId.systemDefault()).toInstant());
+                        
+                        ePrujezd.setAuto(a);
+                        ePrujezd.setZavora(z);
+                        ePrujezd.setDatum_prujezdu(d);
+                        pc.edit_XML(ePrujezd, prujezdIdField.getValue());
+                        fillPrujezdGrid(prujezdGrid, pc);
+                    } catch (Exception ex) {
+                        Notification.show("Failed to edit prujezd", 
+                                Notification.Type.HUMANIZED_MESSAGE);
+                    }
+                }
+            }
+            
+            fillPrujezdGrid(prujezdGrid, pc);
+        });
+        
+        VerticalLayout prujezdEditBar = new VerticalLayout(prujezdIdField, 
+                prujezdAutoComboBox, prujezdZavoraComboBox, prujezdDatumField, pEdit);
+        prujezdForm.addComponents(prujezdEditBar);
+        prujezdLayout.addComponent(prujezdForm);
+        
+        prujezdGrid.addSelectionListener(event -> {
+            if (event.getAllSelectedItems().size() == 1) {
+                // Set the value fields based on the selection
+                Prujezd vybrany = event.getAllSelectedItems().stream().findFirst().get();
+                prujezdIdField.setValue(vybrany.getId().toString());
+                prujezdAutoComboBox.setSelectedItem(vybrany.getAuto());
+                prujezdZavoraComboBox.setSelectedItem(vybrany.getZavora());
+                LocalDateTime ldt = LocalDateTime.ofInstant(vybrany.getDatum_prujezdu().toInstant(), 
+                        ZoneId.systemDefault());
+                prujezdDatumField.setValue(ldt);
+                pEdit.setCaption("Editovat");
+           }
+           else {
+               pEdit.setCaption("Vytvořit");
+               prujezdIdField.clear();
+               prujezdAutoComboBox.clear();
+               prujezdZavoraComboBox.clear();
+               prujezdDatumField.clear();
+           }
+        });
+        
         setContent(layout);
     }
 
@@ -286,7 +380,7 @@ public class MyUI extends UI {
         return grid;
     }
     
-    private Grid<Prujezd> initPrujezdGrid(List<Prujezd> prujezdy) {
+    private Grid<Prujezd> initPrujezdGrid(List<Prujezd> prujezdy, PrujezdRESTClient pc) {
         Grid<Prujezd> grid = new Grid<>();
         grid.setSizeFull();
         grid.setItems(prujezdy);
@@ -298,6 +392,20 @@ public class MyUI extends UI {
         grid.addColumn((zavoraEntity) -> {
             return zavoraEntity.getZavora().getUmisteni();
         }).setCaption("Umístění");
+        // Delete button
+        grid.addComponentColumn(prujezd -> {
+            Button del = new Button();
+            del.setIcon(VaadinIcons.TRASH);
+            setStyleName(ValoTheme.LAYOUT_COMPONENT_GROUP);
+            del.addStyleName(ValoTheme.BUTTON_BORDERLESS);
+            del.addClickListener(e -> {
+                pc.remove(prujezd.getId().toString());  
+                PrujezdBox tmp = pc.findAllPrujezdy_JSON(PrujezdBox.class);
+                grid.setItems(tmp.getPrujezdbox());
+            });
+            
+            return del;
+        }).setWidth(120).setCaption("Odstranit");
         return grid;
     }
     
@@ -306,9 +414,14 @@ public class MyUI extends UI {
         autoGrid.setItems(tmp.getAutobox());
     }
     
-     private void fillZavoraGrid(Grid<Zavora> zavoraGrid, ZavoraRESTClient zc) {
+    private void fillZavoraGrid(Grid<Zavora> zavoraGrid, ZavoraRESTClient zc) {
         ZavoraBox tmp = zc.findAllZavory_JSON(ZavoraBox.class);
         zavoraGrid.setItems(tmp.getZavorabox());
+    }
+    
+    private void fillPrujezdGrid(Grid<Prujezd> prujezdGrid, PrujezdRESTClient pc) {
+        PrujezdBox tmp = pc.findAllPrujezdy_JSON(PrujezdBox.class);
+        prujezdGrid.setItems(tmp.getPrujezdbox());
     }
     
     
