@@ -48,6 +48,7 @@ public class MyUI extends UI {
     @Override
     protected void init(VaadinRequest vaadinRequest) {
         final VerticalLayout layout = new VerticalLayout();
+        layout.setMargin(false);
         
         /*
             Create the REST clients
@@ -113,10 +114,16 @@ public class MyUI extends UI {
         });
         
         /*
+            Auto search bar
+        */
+        TextField autoSearchBar = new TextField("search");
+        
+        /*
             The global grid definitions
         */
         AutoBox auta = ac.findAllAuta_JSON(AutoBox.class);
         Grid<Auto> autoGrid = initAutoGrid(auta.getAutobox(), ac);
+        autoLayout.addComponent(autoSearchBar);
         autoLayout.addComponent(autoGrid);
         autoLayout.setExpandRatio(autoGrid, 0.8f);
         ZavoraBox zavory = zc.findAllZavory_JSON(ZavoraBox.class);
@@ -136,10 +143,14 @@ public class MyUI extends UI {
         
         // The form to edit the cars
         FormLayout autoForm = new FormLayout();
+        autoForm.setMargin(false);
+        autoForm.setWidth("38.2%");
         TextField autoIdField = new TextField("ID");
         autoIdField.setEnabled(false);
         TextField autoNazevField = new TextField("Název");
+        autoNazevField.setWidth("100%");
         TextField autoSPZField = new TextField("SPZ");
+        autoSPZField.setWidth("100%");
         
         Button aEdit = new Button("Vytvořit");
         aEdit.addClickListener(e -> {
@@ -189,10 +200,14 @@ public class MyUI extends UI {
         
         // The form to edit zavory
         FormLayout zavoraForm = new FormLayout();
+        zavoraForm.setMargin(false);
+        zavoraForm.setWidth("38.2%");
         TextField zavoraIdField = new TextField("ID");
         zavoraIdField.setEnabled(false);
         TextField zavoraUmisteniField = new TextField("Umístění");
+        zavoraUmisteniField.setWidth("100%");
         TextField zavoraCenaField = new TextField("Cena za průjezd");
+        zavoraCenaField.setWidth("100%");
         
         Button zEdit = new Button("Vytvořit");
         zEdit.addClickListener(e -> {
@@ -244,6 +259,8 @@ public class MyUI extends UI {
 
         // The form to edit zavory
         FormLayout prujezdForm = new FormLayout();
+        prujezdForm.setMargin(false);
+        prujezdForm.setWidth("38.2%");
         TextField prujezdIdField = new TextField("ID");
         prujezdIdField.setEnabled(false);
         zavoraIdField.setEnabled(false);
