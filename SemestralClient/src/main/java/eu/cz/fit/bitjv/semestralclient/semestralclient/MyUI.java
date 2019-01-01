@@ -114,16 +114,13 @@ public class MyUI extends UI {
         });
         
         /*
-            Auto search bar
-        */
-        TextField autoSearchBar = new TextField("search");
-        
-        /*
             The global grid definitions
         */
         AutoBox auta = ac.findAllAuta_JSON(AutoBox.class);
         Grid<Auto> autoGrid = initAutoGrid(auta.getAutobox(), ac);
-        autoLayout.addComponent(autoSearchBar);
+        // Search Bar
+        TextField autoSearchBar = new TextField("search");
+        autoLayout.addComponent(autoSearchBar); 
         autoLayout.addComponent(autoGrid);
         autoLayout.setExpandRatio(autoGrid, 0.8f);
         ZavoraBox zavory = zc.findAllZavory_JSON(ZavoraBox.class);
@@ -134,6 +131,20 @@ public class MyUI extends UI {
         Grid<Prujezd> prujezdGrid = initPrujezdGrid(prujezdy.getPrujezdbox(), pc);
         prujezdLayout.addComponent(prujezdGrid);
         prujezdLayout.setExpandRatio(prujezdGrid, 0.8f);
+        
+        /*
+            Auto search bar
+        */
+        autoSearchBar.setWidth("100%");
+        autoSearchBar.addValueChangeListener(event -> {
+            if(autoSearchBar.isEmpty()) {
+                fillAutoGrid(autoGrid, ac);
+            }
+            else {
+                AutoBox searchResults = ac.searchAuto_JSON(AutoBox.class, autoSearchBar.getValue());
+                autoGrid.setItems(searchResults.getAutobox());
+            }
+        });
         
         /*
         ========================================================================\
