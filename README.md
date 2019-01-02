@@ -1,4 +1,4 @@
-# Semestrálka BI-TJV
+# Java Technology (BI-TJV) Semestral project
 Project for the Java Technology course at FIT CTU. The goal was to create a REST backend server with Java JPA and a VAADIN Java frontend that is connected to the REST backend.
 - SemestralServer - REST server
 - SemestralKlient - Vaadin client
